@@ -7,7 +7,7 @@ public class StringAddCalculator {
 			return 0;
 		}
 		Numbers numbers = Parser.parse(input);
-		return Accumulator.accumulate(numbers);
+		return numbers.getTotal();
 	}
 
 }

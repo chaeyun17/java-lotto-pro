@@ -5,22 +5,24 @@ import java.util.regex.Pattern;
 
 public class Parser {
 
-	public static final String defaultDelimiter = ",|:";
-	public static final String customRegex = "//(.)\n(.*)";
-	public static final String numberFormatRegex = "^[0-9]";
+	private static final String DEFAULT_DELIMITER = ",|:";
+	private static final Pattern CUSTOM_REGEX = Pattern.compile("//(.)\n(.*)");
+	private static final Pattern NUMBER_FORMAT_REGEX = Pattern.compile("^[0-9]");
+	private static final int CUSTOM_REGEX_DELIMITER_IDX = 1;
+	private static final int CUSTOM_REGEX_NUMBERS_IDX = 2;
 
 	public static Numbers parse(String input) {
 		if (isCustomDelimiter(input)) {
 			return customSplit(input);
 		}
-		return split(input, defaultDelimiter);
+		return split(input, DEFAULT_DELIMITER);
 	}
 
 	private static Numbers customSplit(String input) {
 		Matcher m = getCustomMatcher(input);
 		if (m.find()) {
-			String delimiter = m.group(1);
-			String numberStr = m.group(2);
+			String delimiter = m.group(CUSTOM_REGEX_DELIMITER_IDX);
+			String numberStr = m.group(CUSTOM_REGEX_NUMBERS_IDX);
 			return split(numberStr, delimiter);
 		}
 		throw new RuntimeException(ErrorMessage.CUSTOM_SPLIT_ERROR.message());
@@ -36,7 +38,7 @@ public class Parser {
 	}
 
 	private static int parseNumber(String str) {
-		Matcher matcher = Pattern.compile(numberFormatRegex).matcher(str);
+		Matcher matcher = NUMBER_FORMAT_REGEX.matcher(str);
 		if (matcher.find()) {
 			return Integer.parseInt(str);
 		}
@@ -49,7 +51,7 @@ public class Parser {
 	}
 
 	private static Matcher getCustomMatcher(String input) {
-		return Pattern.compile(customRegex).matcher(input);
+		return CUSTOM_REGEX.matcher(input);
 	}
 
 }
